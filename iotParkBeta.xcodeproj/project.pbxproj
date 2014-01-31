@@ -11,6 +11,7 @@
 		5C49FDD6189AC5CC006D42F1 /* getSpots.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; path = getSpots.php; sourceTree = "<group>"; };
 		5C49FDD7189AC762006D42F1 /* mapTest.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = mapTest.html; sourceTree = "<group>"; };
 		5C49FDD8189ACE09006D42F1 /* spotsMap.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = spotsMap.html; sourceTree = "<group>"; };
+		5C49FDDD189B276E006D42F1 /* getSensors.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; path = getSensors.php; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -21,6 +22,7 @@
 				5C49FDD8189ACE09006D42F1 /* spotsMap.html */,
 				5C49FDD5189AC5CC006D42F1 /* database.php */,
 				5C49FDD6189AC5CC006D42F1 /* getSpots.php */,
+				5C49FDDD189B276E006D42F1 /* getSensors.php */,
 			);
 			sourceTree = "<group>";
 		};
