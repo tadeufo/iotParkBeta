@@ -2,7 +2,7 @@
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-        <title>Google Maps AJAX + mySQL/PHP Example</title>
+        <title>IoT Park Beta</title>
         <script src="http://maps.googleapis.com/maps/api/js?sensor=false"
             type="text/javascript"></script>
         <script type="text/javascript">
@@ -14,7 +14,7 @@
             
             function load() {
                 map = new google.maps.Map(document.getElementById("map"), {
-                                          center: new google.maps.LatLng(0, 0),
+                                          center: new google.maps.LatLng(-15.799872, -47.880478),
                                           zoom: 4,
                                           mapTypeId: 'roadmap',
                                           mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
@@ -38,7 +38,7 @@
                                                     if (status == google.maps.GeocoderStatus.OK) {
                                                         searchLocationsNear(results[0].geometry.location);
                                                     } else {
-                                                        alert(address + ' not found');
+                                                        alert(address + ' local n&atilde;o encontrado');
                                                     }
                                                 });
         }
@@ -53,7 +53,7 @@
             locationSelect.innerHTML = "";
             var option = document.createElement("option");
             option.value = "none";
-            option.innerHTML = "See all results:";
+            option.innerHTML = "Selecione o local:";
             locationSelect.appendChild(option);
         }
         
@@ -65,19 +65,26 @@
             downloadUrl(searchUrl, function(data) {
                         var xml = parseXml(data);
                         var markerNodes = xml.documentElement.getElementsByTagName("spot");
+                        if (markerNodes.length == 0){
+                            alert("Nenhum estacionamento cadastrado na área buscada");
+                            map.panTo(center);
+                            map.setZoom(9);
+                            return;
+                        }
                         var bounds = new google.maps.LatLngBounds();
                         for (var i = 0; i < markerNodes.length; i++) {
-                            var name = markerNodes[i].getAttribute("description");
-                            var address = markerNodes[i].getAttribute("address");
-                            var distance = parseFloat(markerNodes[i].getAttribute("distance"));
+                            var description = markerNodes[i].getAttribute("description");
+                            var address     = markerNodes[i].getAttribute("address");
+                            var distance    = parseFloat(markerNodes[i].getAttribute("distance"));
+                            var count       = parseFloat(markerNodes[i].getAttribute("count"));
                             var latlng = new google.maps.LatLng(
                                                             parseFloat(markerNodes[i].getAttribute("lat")),
                                                             parseFloat(markerNodes[i].getAttribute("lng"))
                                                             );
                         
-                            createOption(name, distance, i);
+                            createOption(description, distance, i);
                         
-                            createMarker(latlng, name, address);
+                            createMarker(latlng, description, address, count);
                         
                             bounds.extend(latlng);
                         }
@@ -89,9 +96,82 @@
                             };
                         });
         }
- 
-        function createMarker(latlng, description, address) {
-            var html = "<b>" + description + "</b> <br/>" + address;
+        function getNoiseLevelFromToken(token){
+            var sensorDataURL = "http://dca.telefonicabeta.com/m2m/v2/services/"+token+"/assets/"+token+"/";
+            var data = downloadRestUrl(sensorDataURL);
+            sensor = JSON.parse(data);
+            if (sensor.data.sensorData[3].ms.v < 300){
+                return 0;
+            }else{
+                if(sensor.data.sensorData[3].ms.v < 800){
+                     return 1;
+                  }else{
+                     return 2;
+                  }
+            }
+        }
+        
+        function getBrightnessLevelFromToken(token){
+            var sensorDataURL = "http://dca.telefonicabeta.com/m2m/v2/services/"+token+"/assets/"+token+"/";
+            var data = downloadRestUrl(sensorDataURL);
+            sensor = JSON.parse(data);
+            if (sensor.data.sensorData[2].ms.v < 300){
+                return 0;
+            }else{
+                if(sensor.data.sensorData[2].ms.v < 800){
+                    return 1;
+                }else{
+                    return 2;
+                }
+            }
+        }
+        
+        function createMarker(latlng, description, address, count) {
+            //getting sensors near the spot
+//            var sensorsURL = 'getSensors.php?lat=' + latlng.lat() + '&lng=' + latlng.lng() + '&radius=1';
+                        ///////////DEBUG/////////////
+            var sensorsURL = 'getSensors.php?lat=' + "-23.516390" + '&lng=' + "-46.636112" + '&radius=1';
+                        ////////////////////////////
+            var noiseLevel = 0;
+            var brightnessLevel = 0;
+
+            //Create the informationa panel
+            var html = "<b>" + address + "</b>&nbsp;" + count + " vaga(s).<br/>" + description;
+            
+            downloadUrl(sensorsURL, function(data){
+                            var xml = parseXml(data);
+                            var sensorsData = xml.documentElement.getElementsByTagName("sensor");
+                            var token = sensorsData[0].getAttribute("token");
+
+                            noiseLevel = getNoiseLevelFromToken(token);
+                            brightnessLevel = getBrightnessLevelFromToken(token);
+
+                            switch(noiseLevel){
+                                case 0 :
+                                    html += "<img title=\"Pouco Trânsito\" src=\"lowTraffic.png\" width=24 heigth=24/>";
+                                    break;
+                                case 1:
+                                    html += "<img title=\"Trânsito Moderado\" src=\"mediumTraffic.png\" width=24 heigth=24/>";
+                                    break;
+                                case 2:
+                                    html += "<img title=\"Trânsito Pesado\" src=\"heavyTraffic.png\" width=24 heigth=24/>";
+                                    break;
+                            }
+                            switch(brightnessLevel){
+                                case 0 :
+                                    html += "<img title=\"Local Pouco Iluminado\" src=\"lowBright.png\" width=24 heigth=24/>";
+                                    break;
+                                case 1:
+                                    html += "<img title=\"Local Parcialmente Iluminado\" src=\"mediumBright.png\" width=24 heigth=24/>";
+                                    break;
+                                case 2:
+                                    html += "<img title=\"Local Bem Iluminado\" src=\"fullBright.png\" width=24 heigth=24/>";
+                                    break;
+                            }
+                        });
+            
+            
+            //Create the marker
             var marker = new google.maps.Marker({
                                                 map: map,
                                                 position: latlng,
@@ -105,10 +185,11 @@
                                                     strokeWeight: 5
                                                 }
                                                 });
-            var markerIcon = marker.getIcon();
+            //Changing marker color
+            /*var markerIcon = marker.getIcon();
             markerIcon.fillColor = "red";
             markerIcon.strokeColor = "red";
-            marker.setIcon(markerIcon);
+            marker.setIcon(markerIcon);*/
             google.maps.event.addListener(marker, 'click', function() {
                                                              infoWindow.setContent(html);
                                                              infoWindow.open(map, marker);
@@ -119,7 +200,7 @@
         function createOption(description, distance, num) {
             var option = document.createElement("option");
             option.value = num;
-            option.innerHTML = description + "(" + distance.toFixed(1) + ")";
+            option.innerHTML = description + "(" + distance.toFixed(1) + "Km)";
             locationSelect.appendChild(option);
         }
         
@@ -135,6 +216,14 @@
             
             request.open('GET', url, true);
             request.send(null);
+        }
+        
+        function downloadRestUrl(url, callback) {
+            var request = window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest;
+            
+            request.open('GET', url, false);
+            request.send(null);
+            return request.responseText;
         }
         
         function parseXml(str) {
@@ -155,14 +244,16 @@
     
     <body style="margin:0px; padding:0px;" onload="load()">
         <div>
-            <input type="text" id="addressInput" size="10" value="mountain view"/>
+            Onde você está?
+            <input type="text" id="addressInput" size="50" value="parque anhembi"/>
+            Dist. Máxima:
             <select id="radiusSelect">
-                <option value="25" selected>25Km</option>
-                <option value="100">100Km</option>
-                <option value="200">200Km</option>
+                <option value="2" selected>2Km</option>
+                <option value="10">10Km</option>
+                <option value="20">20Km</option>
             </select>
             
-            <input type="button" onclick="searchLocations()" value="Search"/>
+            <input type="button" onclick="searchLocations()" value="Achar"/>
         </div>
         <div><select id="locationSelect" style="width:100%;visibility:hidden"></select></div>
         <div id="map" style="width: 100%; height: 80%"></div>

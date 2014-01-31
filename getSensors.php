@@ -24,7 +24,7 @@
     }
     
     // Search the rows in the markers table
-    $query = sprintf("SELECT token, lat, lng, alt, ( 6371 * acos( cos( radians('%s') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( lat ) ) ) ) AS distance FROM assets HAVING distance < '%s' ORDER BY distance LIMIT 0 , 20",
+    $query = sprintf("SELECT token, ( 6371 * acos( cos( radians('%s') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( lat ) ) ) ) AS distance FROM assets HAVING distance < '%s' ORDER BY distance LIMIT 0,1",
                      mysql_real_escape_string($center_lat),
                      mysql_real_escape_string($center_lng),
                      mysql_real_escape_string($center_lat),
@@ -44,9 +44,6 @@
         $node = $dom->createElement("sensor");
         $newnode = $parnode->appendChild($node);
         $newnode->setAttribute("token", $row['token']);
-        $newnode->setAttribute("lat", $row['lat']);
-        $newnode->setAttribute("lng", $row['lng']);
-        $newnode->setAttribute("alt", $row['alt']);
         $newnode->setAttribute("distance", $row['distance']);
     }
     

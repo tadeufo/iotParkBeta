@@ -12,6 +12,13 @@
 		5C49FDD7189AC762006D42F1 /* mapTest.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = mapTest.html; sourceTree = "<group>"; };
 		5C49FDD8189ACE09006D42F1 /* spotsMap.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = spotsMap.html; sourceTree = "<group>"; };
 		5C49FDDD189B276E006D42F1 /* getSensors.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; path = getSensors.php; sourceTree = "<group>"; };
+		5C49FDDE189B5F53006D42F1 /* fullBright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fullBright.png; sourceTree = "<group>"; };
+		5C49FDDF189B5F54006D42F1 /* heavyTraffic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = heavyTraffic.png; sourceTree = "<group>"; };
+		5C49FDE0189B5F54006D42F1 /* lowBright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lowBright.png; sourceTree = "<group>"; };
+		5C49FDE1189B5F54006D42F1 /* lowTraffic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lowTraffic.png; sourceTree = "<group>"; };
+		5C49FDE2189B5F54006D42F1 /* mediumBright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mediumBright.png; sourceTree = "<group>"; };
+		5C49FDE3189B5F54006D42F1 /* mediumTraffic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mediumTraffic.png; sourceTree = "<group>"; };
+		5C49FDE4189C267C006D42F1 /* iotpark_2014-01-31.sql */ = {isa = PBXFileReference; lastKnownFileType = text; path = "iotpark_2014-01-31.sql"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -20,6 +27,13 @@
 			children = (
 				5C49FDD7189AC762006D42F1 /* mapTest.html */,
 				5C49FDD8189ACE09006D42F1 /* spotsMap.html */,
+				5C49FDE4189C267C006D42F1 /* iotpark_2014-01-31.sql */,
+				5C49FDDE189B5F53006D42F1 /* fullBright.png */,
+				5C49FDDF189B5F54006D42F1 /* heavyTraffic.png */,
+				5C49FDE0189B5F54006D42F1 /* lowBright.png */,
+				5C49FDE1189B5F54006D42F1 /* lowTraffic.png */,
+				5C49FDE2189B5F54006D42F1 /* mediumBright.png */,
+				5C49FDE3189B5F54006D42F1 /* mediumTraffic.png */,
 				5C49FDD5189AC5CC006D42F1 /* database.php */,
 				5C49FDD6189AC5CC006D42F1 /* getSpots.php */,
 				5C49FDDD189B276E006D42F1 /* getSensors.php */,

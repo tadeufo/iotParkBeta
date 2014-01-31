@@ -24,13 +24,11 @@
     }
     
     // Search the rows in the markers table
-    $query = sprintf("SELECT address, description, lat, lng, ( 6371 * acos( cos( radians('%s') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( lat ) ) ) ) AS distance FROM spots HAVING distance < '%s' ORDER BY distance LIMIT 0 , 20",
+    $query = sprintf("SELECT address, description, lat, lng, count, ( 6371 * acos( cos( radians('%s') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( lat ) ) ) ) AS distance FROM spots HAVING distance < '%s' ORDER BY distance LIMIT 0 , 20",
                      mysql_real_escape_string($center_lat),
                      mysql_real_escape_string($center_lng),
                      mysql_real_escape_string($center_lat),
                      mysql_real_escape_string($radius));
-
-    $result = mysql_query($query);
     
     $result = mysql_query($query);
     if (!$result) {
@@ -47,6 +45,7 @@
         $newnode->setAttribute("address", $row['address']);
         $newnode->setAttribute("lat", $row['lat']);
         $newnode->setAttribute("lng", $row['lng']);
+        $newnode->setAttribute("count", $row['count']);        
         $newnode->setAttribute("distance", $row['distance']);
     }
     
